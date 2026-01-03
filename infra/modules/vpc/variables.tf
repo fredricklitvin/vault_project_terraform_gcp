@@ -11,7 +11,7 @@ variable "region" {
 variable "private_subnet_cidr_range_pods" {
   description = "The CIDR range for the GKE pods"
   type        = string
-  default     = "10.0.1.0/24"
+  default     = "10.0.8.0/21"
 }
 
 variable "private_subnet_cidr_range_services" {
@@ -30,10 +30,4 @@ variable "vpc_subnet" {
   description = "The subnet for the VPC"
   type        = string
   default     = "10.0.0.0/24"
-}
-
-variable "labels" {
-  description = "Labels to apply to resources"
-  type        = map(string)
-  default     = {}
 }

@@ -14,4 +14,7 @@ output private_subnet_cidr_range_services {
   value       = google_compute_subnetwork.private_subnet.secondary_ip_range[1].ip_cidr_range
   description = "The CIDR range for the GKE services"
 }
-
+output vpc_subnet_cidr {
+  value       = google_compute_subnetwork.private_subnet.ip_cidr_range
+  description = "The CIDR range for the VPC subnet"
+}

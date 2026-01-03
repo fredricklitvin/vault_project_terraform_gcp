@@ -9,9 +9,7 @@ terraform {
     bucket = "terraform-infra-vault"
     prefix = "terraform/state"
   }
-  
 }
-
 
 provider "google" {
   project     = var.project_id
