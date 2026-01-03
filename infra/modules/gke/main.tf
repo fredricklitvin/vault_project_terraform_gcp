@@ -20,14 +20,14 @@ resource "google_container_cluster" "primary" {
     oauth_scopes = [
       "https://www.googleapis.com/auth/cloud-platform"
     ]
-    disk_size_gb = 10
+    disk_size_gb = 15
   }
 
   network = var.network_id
   subnetwork = var.subnetwork_id
   ip_allocation_policy {
-    cluster_ipv4_cidr_block = var.cluster_secondary_range
-    services_ipv4_cidr_block = var.services_secondary_range
+    cluster_secondary_range_name = var.cluster_secondary_name
+    services_secondary_range_name = var.services_secondary_name
   }
 
   private_cluster_config {

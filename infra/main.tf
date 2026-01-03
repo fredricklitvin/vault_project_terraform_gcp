@@ -11,8 +11,8 @@ module gke {
   region     = var.region
   network_id = module.vpc.vpc_id
   subnetwork_id = module.vpc.private_subnet_id
-  cluster_secondary_range = module.vpc.private_subnet_cidr_range_pods
-  services_secondary_range = module.vpc.private_subnet_cidr_range_services
+  cluster_secondary_name = module.vpc.private_subnet_cidr_pods_name
+  services_secondary_name = module.vpc.private_subnet_cidr_services_name
   labels = var.labels
   vpc_subnet_cidr = module.vpc.vpc_subnet_cidr
 }

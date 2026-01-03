@@ -1,0 +1,39 @@
+name: destroy-infra-terraform
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    name: terraform-infra ci/cd
+    runs-on: ubuntu-latest
+    
+    permissions:
+      id-token: write        
+      contents: read
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: authenticate to google account
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "projects/1090649208923/locations/global/workloadIdentityPools/github-vault-pool/providers/github-vault-provider"
+          service_account: "terraform-sa-infra-vault@brave-inn-477912-q1.iam.gserviceaccount.com"
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.0
+
+      - name: Terraform Init
+        working-directory: infra/
+        run: terraform init -input=false
+
+      - name: Terraform Plan
+        working-directory: infra/
+        run: terraform plan -destroy -input=false -out=tfdestroy
+
+      - name: Terraform Apply
+        working-directory: infra/
+        run: terraform apply -input=false -auto-approve tfdestroy
+          

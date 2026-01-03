@@ -28,11 +28,11 @@ variable "subnetwork_id" {
   description = "The name of the subnetwork"
   type        = string
 }
-variable "cluster_secondary_range" {
+variable "cluster_secondary_name" {
   description = "The name of the cluster's secondary range"
   type        = string
 }
-variable "services_secondary_range" {
+variable "services_secondary_name" {
   description = "The name of the services' secondary range"
   type        = string
 }
