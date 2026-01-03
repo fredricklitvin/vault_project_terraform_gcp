@@ -9,3 +9,12 @@ variable "region" {
   default     = "us-central1"
   description = "The GCP region to deploy resources"
 }
+variable "labels" {
+  description = "Labels to apply to resources"
+  type        = map(string)
+  default     = {
+    environment = "dev"
+    team        = "devops"
+    app         = "vault"
+  }
+}

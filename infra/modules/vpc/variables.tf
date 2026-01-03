@@ -31,3 +31,9 @@ variable "vpc_subnet" {
   type        = string
   default     = "10.0.0.0/24"
 }
+
+variable "labels" {
+  description = "Labels to apply to resources"
+  type        = map(string)
+  default     = {}
+}
