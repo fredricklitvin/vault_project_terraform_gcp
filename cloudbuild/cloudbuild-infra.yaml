@@ -1,0 +1,13 @@
+options:
+  pool:
+    name: projects/brave-inn-477912-q1/locations/us-central1/workerPools/vault-private-pool
+
+steps:
+  - name: hashicorp/terraform:1.9
+    entrypoint: sh
+    args:
+      - -c
+      - |
+        terraform --version
+        terraform init
+        terraform plan

@@ -16,3 +16,10 @@ module gke {
   labels = var.labels
   vpc_subnet_cidr = module.vpc.vpc_subnet_cidr
 }
+
+module cloudbuild {
+  source     = "./modules/cloudbuild"
+  project_id = var.project_id
+  region     = var.region
+  network_id = module.vpc.vpc_id
+}
