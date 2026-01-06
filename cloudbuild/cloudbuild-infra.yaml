@@ -1,13 +1,17 @@
+serviceAccount: projects/brave-inn-477912-q1/serviceAccounts/cloud-build-sa@brave-inn-477912-q1.iam.gserviceaccount.com
+logsBucket: gs://vault-cloudbuild-bucket
+
 options:
   pool:
-    name: projects/brave-inn-477912-q1/locations/us-central1/workerPools/vault-private-pool
-
+    name: projects/brave-inn-477912-q1/locations/us-central1/workerPools/vault-cloudbuild-pool
 steps:
   - name: hashicorp/terraform:1.9
     entrypoint: sh
+    env:
+      - TF_IN_AUTOMATION=true
     args:
       - -c
       - |
-        terraform --version
-        terraform init
-        terraform plan
+        terraform -chdir=cloudbuild/infra-cloudbuild init -input=false
+        terraform -chdir=cloudbuild/infra-cloudbuild plan -input=false -out=tfplan
+        terraform -chdir=cloudbuild/infra-cloudbuild apply -input=false -auto-approve tfplan

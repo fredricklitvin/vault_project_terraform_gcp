@@ -1,3 +1,27 @@
+resource "google_service_account" "cloudbuild_service_account" {
+  account_id = "cloud-build-sa"
+}
+
+resource "google_project_iam_member" "act_as" {
+  for_each = var.cloudbuild_sa_roles
+  project = var.project_id
+  role    = each.value
+  member  = "serviceAccount:${google_service_account.cloudbuild_service_account.email}"
+}
+
+resource "google_storage_bucket" "cloudbuild_bucket" {
+  name     = var.cloudbuild_bucket_name
+  location = var.region
+  storage_class = "STANDARD"
+  force_destroy = true
+}
+
+resource "google_storage_bucket_iam_member" "cb_staging_uploader" {
+  bucket = google_storage_bucket.cloudbuild_bucket.name
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${google_service_account.cloudbuild_service_account.email}"
+}
+
 resource "google_compute_global_address" "svc-networking-range" {
   name          =  "svc-networking-range"
   purpose       = "VPC_PEERING"
@@ -19,7 +43,7 @@ resource "google_cloudbuild_worker_pool" "pool" {
   location = var.region
   worker_config {
     disk_size_gb = 100
-    machine_type = "e2-standard-4"
+    machine_type = "e2-medium"
     no_external_ip = true
   }
   network_config {
@@ -29,16 +53,6 @@ resource "google_cloudbuild_worker_pool" "pool" {
   depends_on = [google_service_networking_connection.default]
 }
 
-resource "google_service_account" "cloudbuild_service_account" {
-  account_id = "cloud-build-sa"
-}
-
-resource "google_project_iam_member" "act_as" {
-  for_each = var.cloudbuild_sa_roles
-  project = var.project_id
-  role    = each.value
-  member  = "serviceAccount:${google_service_account.cloudbuild_service_account.email}"
-}
 
 # resource "google_cloudbuild_trigger" "repo-trigger" {
 #   location = var.region

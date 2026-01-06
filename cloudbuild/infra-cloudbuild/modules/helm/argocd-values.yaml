@@ -1,0 +1,4 @@
+argocd:
+  server:
+    service:
+      type: LoadBalancer

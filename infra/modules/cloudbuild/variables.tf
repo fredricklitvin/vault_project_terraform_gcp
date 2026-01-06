@@ -36,6 +36,15 @@ variable "cloudbuild_sa_roles" {
   type        = set(string)
   default     = [
     "roles/iam.serviceAccountUser",
-    "roles/cloudbuild.builds.editor"
+    "roles/cloudbuild.builds.editor",
+    "roles/container.clusterAdmin",
+    "roles/storage.objectAdmin",
+    "roles/serviceusage.serviceUsageConsumer"
   ]
+}
+
+variable "cloudbuild_bucket_name" {
+  description = "The name of the Cloud Build bucket"
+  type        = string
+  default     = "vault-cloudbuild-bucket"
 }

@@ -13,7 +13,6 @@ resource "google_container_cluster" "primary" {
   name     = var.cluster_name
   location = var.region
   deletion_protection = false
-  remove_default_node_pool = true
   initial_node_count       = 1
   node_config {
     service_account = google_service_account.gke_node_sa.email
@@ -60,27 +59,27 @@ monitoring_config {
 
 }
 
-resource "google_container_node_pool" "primary_nodes" {
-  name       = "${var.cluster_name}-primary-nodes"
-  location   = var.region
-  cluster    = google_container_cluster.primary.name
-  node_count = 1
+# resource "google_container_node_pool" "primary_nodes" {
+#   name       = "${var.cluster_name}-primary-nodes"
+#   location   = var.region
+#   cluster    = google_container_cluster.primary.name
+#   node_count = 1
 
-   management {
-    auto_repair  = true
-    auto_upgrade = true
-  }
+#    management {
+#     auto_repair  = true
+#     auto_upgrade = true
+#   }
 
-  autoscaling {
-    min_node_count = 1
-    max_node_count = 3
-  }
+#   autoscaling {
+#     min_node_count = 1
+#     max_node_count = 3
+#   }
 
-  node_config {
-    machine_type    = "e2-medium"
-    disk_size_gb    = 30
-    service_account = google_service_account.gke_node_sa.email
+#   node_config {
+#     machine_type    = "e2-medium"
+#     disk_size_gb    = 30
+#     service_account = google_service_account.gke_node_sa.email
 
-    labels = var.labels
-  }
-}
+#     labels = var.labels
+#   }
+# }

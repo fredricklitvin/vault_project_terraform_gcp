@@ -6,6 +6,9 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  TF_IN_AUTOMATION: true
+
 jobs:
   terraform:
     name: terraform-infra ci/cd
@@ -24,6 +27,13 @@ jobs:
         with:
           workload_identity_provider: "projects/1090649208923/locations/global/workloadIdentityPools/github-vault-pool/providers/github-vault-provider"
           service_account: "terraform-sa-infra-vault@brave-inn-477912-q1.iam.gserviceaccount.com"
+          create_credentials_file: true
+          export_environment_variables: true
+
+      - name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+
+        
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -40,4 +50,19 @@ jobs:
       - name: Terraform Apply
         working-directory: infra/
         run: terraform apply -input=false -auto-approve tfplan
-          
+        
+      - name: Debug active identity
+        run: |
+          gcloud auth list
+          echo "Active account:"
+          gcloud config get-value account
+          echo "Try list bucket:"
+          gcloud storage ls gs://brave-inn-477912-q1_cloudbuild || true
+
+      
+      - name: Cloudbuild infra
+        run: |
+          gcloud builds submit --config=cloudbuild/cloudbuild-infra.yaml \
+           --format='value(id)' \
+
+
