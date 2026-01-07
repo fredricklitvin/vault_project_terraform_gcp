@@ -44,7 +44,7 @@ resource "google_cloudbuild_worker_pool" "pool" {
   worker_config {
     disk_size_gb = 100
     machine_type = "e2-medium"
-    no_external_ip = true
+    no_external_ip = false
   }
   network_config {
     peered_network = var.network_id

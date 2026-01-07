@@ -39,6 +39,10 @@ resource "google_container_cluster" "primary" {
         cidr_block   = var.vpc_subnet_cidr
         display_name = "vpc-subnet"
       }
+      cidr_blocks {
+        cidr_block   = "10.100.10.0/24"
+        display_name = "master-ipv4"
+      }
     }
 
   workload_identity_config {

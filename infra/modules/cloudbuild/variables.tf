@@ -39,7 +39,8 @@ variable "cloudbuild_sa_roles" {
     "roles/cloudbuild.builds.editor",
     "roles/container.clusterAdmin",
     "roles/storage.objectAdmin",
-    "roles/serviceusage.serviceUsageConsumer"
+    "roles/serviceusage.serviceUsageConsumer",
+    "roles/compute.viewer"
   ]
 }
 
