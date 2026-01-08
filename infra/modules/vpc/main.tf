@@ -43,3 +43,4 @@ resource "google_compute_router_nat" "vpc_nat" {
     filter = "ALL"
   }
 }
+

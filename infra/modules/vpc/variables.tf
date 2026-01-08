@@ -31,3 +31,15 @@ variable "vpc_subnet" {
   type        = string
   default     = "10.0.0.0/24"
 }
+
+variable "pool_worker_ip_range" {
+  description = "A /24 CIDR from the Service Networking allocated range"
+  type        = string
+  default     = "10.100.10.0/24"
+}
+
+variable "master_ipv4_cidr_block" {
+  description = "The CIDR block for the master IPv4 range"
+  type        = string
+  default     = "172.16.0.0/28"
+}

@@ -5,6 +5,19 @@ options:
   pool:
     name: projects/brave-inn-477912-q1/locations/us-central1/workerPools/vault-cloudbuild-pool
 steps:
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        echo "Worker IP from metadata:"
+        curl -s -H "Metadata-Flavor: Google" \
+          http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip || true
+        echo
+        echo "Try reach GKE master:"
+        curl -k --max-time 5 https://172.16.0.2/version || true
+
+
   - name: hashicorp/terraform:1.9
     entrypoint: sh
     env:
