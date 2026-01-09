@@ -40,7 +40,9 @@ variable "cloudbuild_sa_roles" {
     "roles/container.clusterAdmin",
     "roles/storage.objectAdmin",
     "roles/serviceusage.serviceUsageConsumer",
-    "roles/compute.viewer"
+    "roles/compute.viewer",
+    "roles/container.developer",
+    "roles/logging.logWriter"
   ]
 }
 
@@ -48,4 +50,15 @@ variable "cloudbuild_bucket_name" {
   description = "The name of the Cloud Build bucket"
   type        = string
   default     = "vault-cloudbuild-bucket"
+}
+
+variable "gke_peering_name" {
+  description = "The peering name for the GKE cluster"
+  type        = string
+  default     = ""
+}
+variable "vpc_name" {
+  description = "The name of the VPC"
+  type        = string
+  default     = ""
 }

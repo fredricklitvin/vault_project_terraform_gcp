@@ -18,3 +18,8 @@ output vpc_subnet_cidr {
   value       = google_compute_subnetwork.private_subnet.ip_cidr_range
   description = "The CIDR range for the VPC subnet"
 }
+
+output vpc_name {
+  value       = google_compute_network.vpc_network.name
+  description = "The name of the VPC"
+}
