@@ -22,4 +22,6 @@ module cloudbuild {
   project_id = var.project_id
   region     = var.region
   network_id = module.vpc.vpc_id
+  gke_peering_name = module.gke.gke_peering_name
+  vpc_name = module.vpc.vpc_name
 }

@@ -87,3 +87,33 @@ monitoring_config {
 #     labels = var.labels
 #   }
 # }
+
+resource "google_compute_firewall" "allow_cloudbuild_to_gke_controlplane" {
+  name    = "allow-cloudbuild-egress-to-gke-master"
+  network = var.network_id  # vault-vpc
+  project = var.project_id
+  direction = "EGRESS"
+  priority  = 1000
+  allow {
+    protocol = "tcp"
+    ports    = ["443"]
+  }
+  source_ranges    = ["10.100.10.0/24"]
+  destination_ranges = [var.master_ipv4_cidr_block]  # e.g., "172.16.0.0/28"
+}
+resource "google_compute_firewall" "allow_cloudbuild_to_gke_master" {
+  name    = "allow-cloudbuild-to-gke-master"
+  network = var.vpc_name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["443"] # The Kubernetes API port
+  }
+
+  # This is the range you assigned to the Cloud Build Pool
+  source_ranges = ["10.100.10.0/24"]
+
+  # This is the Control Plane IP range of your GKE cluster
+  # (e.g., 172.16.0.0/28)
+  destination_ranges = [var.master_ipv4_cidr_block] 
+}

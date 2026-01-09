@@ -53,6 +53,13 @@ resource "google_cloudbuild_worker_pool" "pool" {
   depends_on = [google_service_networking_connection.default]
 }
 
+resource "google_compute_network_peering_routes_config" "cloudbuild_peering_config" {
+  peering = "servicenetworking-googleapis-com"
+  network = var.vpc_name
+
+  export_custom_routes = true
+  import_custom_routes = true
+}
 
 # resource "google_cloudbuild_trigger" "repo-trigger" {
 #   location = var.region
