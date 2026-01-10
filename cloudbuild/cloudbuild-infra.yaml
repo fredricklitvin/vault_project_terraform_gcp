@@ -1,5 +1,3 @@
-# cloudbuild/cloudbuild-infra.yaml
-
 serviceAccount: projects/brave-inn-477912-q1/serviceAccounts/cloud-build-sa@brave-inn-477912-q1.iam.gserviceaccount.com
 logsBucket: gs://vault-cloudbuild-bucket
 
@@ -8,7 +6,7 @@ options:
     name: projects/brave-inn-477912-q1/locations/us-central1/workerPools/vault-cloudbuild-pool
 
 steps:
-  # 0) Quick network + auth + kubectl test (same as your VM test)
+  # 0) Test connectivity and get credentials
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:latest
     id: "test-gke-connectivity"
     entrypoint: bash
@@ -17,39 +15,28 @@ steps:
       - |
         set -euxo pipefail
 
-        echo "Worker IP from metadata:"
-        curl -s -H "Metadata-Flavor: Google" \
-          http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/ip || true
-        echo
-
-        echo "gcloud identity:"
-        gcloud auth list || true
-        gcloud config list || true
-
-        echo "Try install kubectl (best effort):"
-        gcloud components install kubectl --quiet || true
-
-        echo "Get credentials (private endpoint):"
+        # Get credentials using the INTERNAL IP (essential for Private Pools)
         gcloud container clusters get-credentials gke-vault \
           --region us-central1 \
-          --project brave-inn-477912-q1
+          --project brave-inn-477912-q1 \
+          --internal-ip
 
-        echo "kubectl sanity:"
-        kubectl version --short || true
+        # Fixed: --short is deprecated and causes errors in newer kubectl versions
+        kubectl version --client
+        
+        # Test the connection
         kubectl get nodes -o wide
-        kubectl get pods -A | head -n 80
 
-  # 1) Terraform (Helm/ArgoCD/Monitoring) from your cloudbuild/infra-cloudbuild directory
+  # 1) Terraform Apply
   - name: hashicorp/terraform:1.9
     id: "terraform-helm-layer"
     entrypoint: sh
-    env:
-      - TF_IN_AUTOMATION=true
     args:
       - -c
       - |
         set -eu
 
+        
         terraform -chdir=cloudbuild/infra-cloudbuild init -input=false
         terraform -chdir=cloudbuild/infra-cloudbuild plan -input=false -out=tfplan
         terraform -chdir=cloudbuild/infra-cloudbuild apply -input=false -auto-approve tfplan

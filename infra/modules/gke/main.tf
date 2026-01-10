@@ -101,9 +101,10 @@ resource "google_compute_firewall" "allow_cloudbuild_to_gke_controlplane" {
   source_ranges    = ["10.100.10.0/24"]
   destination_ranges = [var.master_ipv4_cidr_block]  # e.g., "172.16.0.0/28"
 }
+
 resource "google_compute_firewall" "allow_cloudbuild_to_gke_master" {
   name    = "allow-cloudbuild-to-gke-master"
-  network = var.vpc_name
+  network = var.network_id
 
   allow {
     protocol = "tcp"
@@ -117,3 +118,4 @@ resource "google_compute_firewall" "allow_cloudbuild_to_gke_master" {
   # (e.g., 172.16.0.0/28)
   destination_ranges = [var.master_ipv4_cidr_block] 
 }
+
