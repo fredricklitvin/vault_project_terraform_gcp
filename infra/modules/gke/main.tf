@@ -30,20 +30,20 @@ resource "google_container_cluster" "primary" {
   }
 
   private_cluster_config {
-    enable_private_nodes    = true
-    enable_private_endpoint = true
-    master_ipv4_cidr_block  = var.master_ipv4_cidr_block
+    enable_private_nodes    = false
+    enable_private_endpoint = false
+    # master_ipv4_cidr_block  = var.master_ipv4_cidr_block
   }
-  master_authorized_networks_config {
-    cidr_blocks {
-        cidr_block   = var.vpc_subnet_cidr
-        display_name = "vpc-subnet"
-      }
-      cidr_blocks {
-        cidr_block   = "10.100.10.0/24"
-        display_name = "master-ipv4"
-      }
-    }
+  # master_authorized_networks_config {
+  #   cidr_blocks {
+  #       cidr_block   = var.vpc_subnet_cidr
+  #       display_name = "vpc-subnet"
+  #     }
+  #     cidr_blocks {
+  #       cidr_block   = "10.100.10.0/24"
+  #       display_name = "master-ipv4"
+  #     }
+  #   }
 
   workload_identity_config {
     workload_pool = "${var.project_id}.svc.id.goog"
@@ -88,34 +88,34 @@ monitoring_config {
 #   }
 # }
 
-resource "google_compute_firewall" "allow_cloudbuild_to_gke_controlplane" {
-  name    = "allow-cloudbuild-egress-to-gke-master"
-  network = var.network_id  # vault-vpc
-  project = var.project_id
-  direction = "EGRESS"
-  priority  = 1000
-  allow {
-    protocol = "tcp"
-    ports    = ["443"]
-  }
-  source_ranges    = ["10.100.10.0/24"]
-  destination_ranges = [var.master_ipv4_cidr_block]  # e.g., "172.16.0.0/28"
-}
+# resource "google_compute_firewall" "allow_cloudbuild_to_gke_controlplane" {
+#   name    = "allow-cloudbuild-egress-to-gke-master"
+#   network = var.network_id  # vault-vpc
+#   project = var.project_id
+#   direction = "EGRESS"
+#   priority  = 1000
+#   allow {
+#     protocol = "tcp"
+#     ports    = ["443"]
+#   }
+#   source_ranges    = ["10.100.10.0/24"]
+#   destination_ranges = [var.master_ipv4_cidr_block]  # e.g., "172.16.0.0/28"
+# }
 
-resource "google_compute_firewall" "allow_cloudbuild_to_gke_master" {
-  name    = "allow-cloudbuild-to-gke-master"
-  network = var.network_id
+# resource "google_compute_firewall" "allow_cloudbuild_to_gke_master" {
+#   name    = "allow-cloudbuild-to-gke-master"
+#   network = var.network_id
 
-  allow {
-    protocol = "tcp"
-    ports    = ["443"] # The Kubernetes API port
-  }
+#   allow {
+#     protocol = "tcp"
+#     ports    = ["443"] # The Kubernetes API port
+#   }
 
-  # This is the range you assigned to the Cloud Build Pool
-  source_ranges = ["10.100.10.0/24"]
+#   # This is the range you assigned to the Cloud Build Pool
+#   source_ranges = ["10.100.10.0/24"]
 
-  # This is the Control Plane IP range of your GKE cluster
-  # (e.g., 172.16.0.0/28)
-  destination_ranges = [var.master_ipv4_cidr_block] 
-}
+#   # This is the Control Plane IP range of your GKE cluster
+#   # (e.g., 172.16.0.0/28)
+#   destination_ranges = [var.master_ipv4_cidr_block] 
+# }
 

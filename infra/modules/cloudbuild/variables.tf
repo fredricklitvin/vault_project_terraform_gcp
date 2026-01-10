@@ -37,11 +37,10 @@ variable "cloudbuild_sa_roles" {
   default     = [
     "roles/iam.serviceAccountUser",
     "roles/cloudbuild.builds.editor",
-    "roles/container.clusterAdmin",
     "roles/storage.objectAdmin",
     "roles/serviceusage.serviceUsageConsumer",
     "roles/compute.viewer",
-    "roles/container.developer",
+    "roles/container.admin",
     "roles/logging.logWriter"
   ]
 }

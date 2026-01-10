@@ -25,3 +25,8 @@ module cloudbuild {
   gke_peering_name = module.gke.gke_peering_name
   vpc_name = module.vpc.vpc_name
 }
+
+module artifact {
+  source     = "./modules/artifact"
+  region     = var.region
+}
